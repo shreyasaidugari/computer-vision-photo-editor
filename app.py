@@ -70,7 +70,7 @@ label, h3 {
 }
 
 section[data-testid="stSidebar"] * {
-    color: white !important;
+    color: black !important;
 }
 
 /* Download button */
