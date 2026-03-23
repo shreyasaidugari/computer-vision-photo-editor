@@ -34,6 +34,36 @@ label, .stSlider, .stSelectbox {
     color: white;
     border-radius: 8px;
 }
+
+/* -------- WHITE INPUT BOX -------- */
+.input-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+/* Upload styling */
+section[data-testid="stFileUploader"] {
+    background-color: white !important;
+    padding: 10px;
+    border-radius: 10px;
+    color: black !important;
+}
+
+/* Camera styling */
+section[data-testid="stCameraInput"] {
+    background-color: white !important;
+    padding: 10px;
+    border-radius: 10px;
+    color: black !important;
+}
+
+/* Labels inside */
+section[data-testid="stFileUploader"] label,
+section[data-testid="stCameraInput"] label {
+    color: black !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -61,12 +91,17 @@ backdrop-filter: blur(5px);
 </div>
 """, unsafe_allow_html=True)
 
-# -------------------- INPUT --------------------
-st.subheader("Choose Input")
+# -------------------- INPUT SECTION --------------------
+st.markdown('<div class="input-box">', unsafe_allow_html=True)
+
+st.markdown("<h4 style='color:black;'>Choose Input</h4>", unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
 camera_image = st.camera_input("Use Camera")
 
+st.markdown('</div>', unsafe_allow_html=True)
+
+# -------------------- LOAD IMAGE --------------------
 if uploaded_file:
     img = Image.open(uploaded_file)
 
@@ -93,7 +128,7 @@ img = ImageEnhance.Brightness(img).enhance(brightness)
 contrast = st.sidebar.slider("Contrast", 0.5, 3.0, 1.0)
 img = ImageEnhance.Contrast(img).enhance(contrast)
 
-# Convert
+# Convert to numpy
 img_np = np.array(img)
 
 # -------------------- FILTER --------------------
