@@ -35,7 +35,7 @@ label, .stSlider, .stSelectbox {
     border-radius: 8px;
 }
 
-/* -------- WHITE INPUT BOX -------- */
+/* White input box */
 .input-box {
     background-color: white;
     padding: 20px;
@@ -96,8 +96,20 @@ st.markdown('<div class="input-box">', unsafe_allow_html=True)
 
 st.markdown("<h4 style='color:black;'>Choose Input</h4>", unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
-camera_image = st.camera_input("Use Camera")
+# ✅ RADIO BUTTON FIX
+input_method = st.radio(
+    "Select Input Method",
+    ["Upload Image", "Use Camera"]
+)
+
+uploaded_file = None
+camera_image = None
+
+if input_method == "Upload Image":
+    uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
+
+elif input_method == "Use Camera":
+    camera_image = st.camera_input("Use Camera")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
