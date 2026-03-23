@@ -42,28 +42,6 @@ label, .stSlider, .stSelectbox {
     border-radius: 12px;
     margin-top: 20px;
 }
-
-/* Upload styling */
-section[data-testid="stFileUploader"] {
-    background-color: white !important;
-    padding: 10px;
-    border-radius: 10px;
-    color: black !important;
-}
-
-/* Camera styling */
-section[data-testid="stCameraInput"] {
-    background-color: white !important;
-    padding: 10px;
-    border-radius: 10px;
-    color: black !important;
-}
-
-/* Labels inside */
-section[data-testid="stFileUploader"] label,
-section[data-testid="stCameraInput"] label {
-    color: black !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -85,43 +63,48 @@ backdrop-filter: blur(5px);
 <h4>Instructions</h4>
 <ul>
 <li>Upload an image or use camera</li>
-<li>Allow camera permission when prompted</li>
-<li>If camera does not work in Edge, try using Chrome</li>
+<li>Click "Take Photo" to open camera</li>
+<li>If camera does not work, try Chrome</li>
 </ul>
 </div>
 """, unsafe_allow_html=True)
 
 # -------------------- INPUT SECTION --------------------
 st.markdown('<div class="input-box">', unsafe_allow_html=True)
-
 st.markdown("<h4 style='color:black;'>Choose Input</h4>", unsafe_allow_html=True)
 
-# ✅ RADIO BUTTON FIX
-input_method = st.radio(
-    "Select Input Method",
-    ["Upload Image", "Use Camera"]
-)
+# Initialize state
+if "camera_on" not in st.session_state:
+    st.session_state.camera_on = False
 
-uploaded_file = None
+# Upload
+uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
+
+# If upload → turn OFF camera
+if uploaded_file:
+    st.session_state.camera_on = False
+
+# Button to open camera
+if st.button("📷 Take Photo"):
+    st.session_state.camera_on = True
+
 camera_image = None
 
-if input_method == "Upload Image":
-    uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
-
-elif input_method == "Use Camera":
-    camera_image = st.camera_input("Use Camera")
+# Show camera only when button clicked
+if st.session_state.camera_on:
+    camera_image = st.camera_input("Camera")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------- LOAD IMAGE --------------------
-if uploaded_file:
+if uploaded_file is not None:
     img = Image.open(uploaded_file)
 
-elif camera_image:
+elif camera_image is not None:
     img = Image.open(camera_image)
 
 else:
-    st.info("Upload an image or capture from camera")
+    st.info("Upload an image or click 'Take Photo'")
     st.stop()
 
 # -------------------- SIDEBAR --------------------
@@ -186,7 +169,7 @@ with col2:
     st.image(img_np)
 
 # -------------------- DOWNLOAD --------------------
-result = Image.fromarray(img_np) if isinstance(img_np, np.ndarray) else img
+result = Image.fromarray(img_np)
 
 buf = io.BytesIO()
 result.save(buf, format="PNG")
