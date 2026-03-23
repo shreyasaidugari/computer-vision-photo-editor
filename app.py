@@ -4,10 +4,10 @@ import numpy as np
 from PIL import Image, ImageEnhance
 import io
 
-# -------------------- PAGE CONFIG --------------------
+# PAGE CONFIG 
 st.set_page_config(page_title="Photo Editor", layout="wide")
 
-# -------------------- UI STYLE --------------------
+# UI STYLE 
 st.markdown("""
 <style>
 .stApp {
@@ -82,7 +82,7 @@ section[data-testid="stSidebar"] * {
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------- TITLE --------------------
+# TITLE 
 st.markdown("""
 <div class="title-container">
     <h1>📸 Photo Editor</h1>
@@ -90,7 +90,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# -------------------- INSTRUCTIONS --------------------
+# INSTRUCTIONS 
 st.markdown("""
 <div class="instructions">
 <h4>Instructions</h4>
@@ -103,7 +103,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# -------------------- INPUT --------------------
+# INPUT 
 st.markdown("### Choose Input")
 
 if "camera_on" not in st.session_state:
@@ -122,7 +122,7 @@ camera_image = None
 if st.session_state.camera_on:
     camera_image = st.camera_input("Camera")
 
-# -------------------- LOAD IMAGE --------------------
+#  LOAD IMAGE
 if uploaded_file is not None:
     img = Image.open(uploaded_file)
 
@@ -133,7 +133,7 @@ else:
     st.info("Upload an image or click 'Take Photo'")
     st.stop()
 
-# -------------------- SIDEBAR --------------------
+# SIDEBAR 
 st.sidebar.header("Controls")
 
 width = st.sidebar.slider("Width", 100, 800, img.width)
@@ -148,13 +148,13 @@ img = ImageEnhance.Contrast(img).enhance(contrast)
 
 img_np = np.array(img)
 
-# -------------------- FILTER --------------------
+#  FILTER 
 option = st.sidebar.selectbox("Filter", [
     "None", "Grayscale", "Blur", "Warm",
     "Sharpen", "Edge", "Sketch"
 ])
 
-# -------------------- FILTERS --------------------
+# FILTERS 
 if option == "Grayscale":
     img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
 
@@ -179,7 +179,7 @@ elif option == "Sketch":
     blur = cv2.GaussianBlur(inv, (21, 21), 0)
     img_np = cv2.divide(gray, 255 - blur, scale=256)
 
-# -------------------- DISPLAY --------------------
+# DISPLAY 
 col1, col2 = st.columns(2)
 
 with col1:
@@ -190,7 +190,7 @@ with col2:
     st.markdown("<h3>Edited</h3>", unsafe_allow_html=True)
     st.image(img_np)
 
-# -------------------- DOWNLOAD --------------------
+# DOWNLOAD 
 result = Image.fromarray(img_np)
 
 buf = io.BytesIO()
